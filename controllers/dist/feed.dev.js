@@ -1,6 +1,6 @@
 "use strict";
 
-var _require = require("express-validator/check"),
+var _require = require("express-validator"),
     validationResult = _require.validationResult;
 
 var fs = require("fs");
@@ -33,78 +33,139 @@ exports.getPosts = function (req, res, next) {
   });
 };
 
-exports.postPost = function (req, res, next) {
-  var errors = validationResult(req);
+exports.postPost = function _callee(req, res, next) {
+  var errors, error, _error, imageUrl, title, content, creator, post, user;
 
-  if (!errors.isEmpty()) {
-    var error = new Error("validation failed, entered data is incorrect.");
-    error.statusCode = 422;
-    throw error;
-  }
+  return regeneratorRuntime.async(function _callee$(_context) {
+    while (1) {
+      switch (_context.prev = _context.next) {
+        case 0:
+          errors = validationResult(req);
 
-  if (!req.file) {
-    var _error = new Error("No image provided,");
+          if (errors.isEmpty()) {
+            _context.next = 5;
+            break;
+          }
 
-    _error.statusCode = 422;
-    throw _error;
-  }
+          error = new Error("validation failed, entered data is incorrect.");
+          error.statusCode = 422;
+          throw error;
 
-  var imageUrl = req.file.path;
-  var title = req.body.title;
-  var content = req.body.content;
-  var creator;
-  var post = new Post({
-    title: title,
-    content: content,
-    imageUrl: imageUrl,
-    creator: req.userId
-  });
-  post.save().then(function (result) {
-    console.log(result);
-    return User.findById(req.userId);
-  }).then(function (user) {
-    console.log("user" + user.name);
-    creator = user.name;
-    user.posts.push(post);
-    return user.save();
-  }).then(function (result) {
-    console.log(result);
-    res.status(201).json({
-      message: "Post created successfully!",
-      post: post,
-      creator: {
-        _id: creator._id,
-        name: creator.name
+        case 5:
+          if (req.file) {
+            _context.next = 9;
+            break;
+          }
+
+          _error = new Error("No image provided,");
+          _error.statusCode = 422;
+          throw _error;
+
+        case 9:
+          imageUrl = req.file.path;
+          title = req.body.title;
+          content = req.body.content;
+          post = new Post({
+            title: title,
+            content: content,
+            imageUrl: imageUrl,
+            creator: req.userId
+          });
+          _context.prev = 13;
+          _context.next = 16;
+          return regeneratorRuntime.awrap(post.save());
+
+        case 16:
+          _context.next = 18;
+          return regeneratorRuntime.awrap(User.findById(req.userId));
+
+        case 18:
+          user = _context.sent;
+          console.log("user" + user.name);
+          creator = user.name;
+          user.posts.push(post);
+          _context.next = 24;
+          return regeneratorRuntime.awrap(user.save());
+
+        case 24:
+          res.status(201).json({
+            message: "Post created successfully!",
+            post: post,
+            creator: {
+              _id: creator._id,
+              name: creator.name
+            }
+          });
+          _context.next = 31;
+          break;
+
+        case 27:
+          _context.prev = 27;
+          _context.t0 = _context["catch"](13);
+
+          if (!_context.t0.statusCode) {
+            _context.t0.statusCode = 500;
+          }
+
+          next(_context.t0);
+
+        case 31:
+        case "end":
+          return _context.stop();
       }
-    });
-  })["catch"](function (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
     }
-
-    next(err);
-  });
+  }, null, null, [[13, 27]]);
 };
 
-exports.getPost = function (req, res, next) {
-  var postId = req.params.postId;
-  Post.findById(postId).then(function (post) {
-    if (!post) {
-      var error = new Error("could not find post");
-      error.statusCode = 404;
-      throw error;
-    }
+exports.getPost = function _callee2(req, res, next) {
+  var postId, post, error;
+  return regeneratorRuntime.async(function _callee2$(_context2) {
+    while (1) {
+      switch (_context2.prev = _context2.next) {
+        case 0:
+          postId = req.params.postId;
+          _context2.prev = 1;
+          _context2.next = 4;
+          return regeneratorRuntime.awrap(Post.findById(postId));
 
-    res.status(200).json({
-      message: "Post fetched.",
-      post: post
-    });
-  })["catch"](function (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-      next(err);
+        case 4:
+          post = _context2.sent;
+
+          if (post) {
+            _context2.next = 9;
+            break;
+          }
+
+          error = new Error("could not find post");
+          error.statusCode = 404;
+          throw error;
+
+        case 9:
+          res.status(200).json({
+            message: "Post fetched.",
+            post: post
+          });
+          _context2.next = 15;
+          break;
+
+        case 12:
+          _context2.prev = 12;
+          _context2.t0 = _context2["catch"](1);
+
+          if (!_context2.t0.statusCode) {
+            _context2.t0.statusCode = 500;
+            next(_context2.t0);
+          }
+
+        case 15:
+          ;
+
+        case 16:
+        case "end":
+          return _context2.stop();
+      }
     }
-  });
+  }, null, null, [[1, 12]]);
 };
 
 exports.updatePost = function (req, res, next) {

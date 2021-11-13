@@ -2,7 +2,7 @@
 
 var express = require("express");
 
-var _require = require("express-validator/check"),
+var _require = require("express-validator"),
     body = _require.body;
 
 var User = require("../models/user");
