@@ -11,11 +11,12 @@ exports.getPosts = (req, res, next) => {
     .countDocuments()
     .then((count) => {
       totalItems = count;
-      return Post.find()
+      return Post.find().populate('creator','name')
         .skip((currentPage - 1) * perPage)
         .limit(perPage);
     })
     .then((posts) => {
+      console.log(posts)
       res.status(200).json({
         message: "Fetched posts successfully.",
         posts: posts,
@@ -74,6 +75,7 @@ exports.postPost = async (req, res, next) => {
 };
 
 exports.getPost = async(req, res, next) => {
+  console.log(req)
   const postId = req.params.postId;
   try{
   const post = await Post.findById(postId)
