@@ -1,9 +1,16 @@
-const { validationResult } = require("express-validator");
-const fs = require("fs");
-const path = require("path");
-const Post = require("../models/post");
-const User = require("../models/user");
-exports.getPosts = (req, res, next) => {
+// const { validationResult } = require("express-validator");
+// const fs = require("fs");
+// const path = require("path");
+// const Post = require("../models/post");
+// const User = require("../models/user");
+
+import {validationResult} from "express-validator";
+import fs from "fs";
+import path from 'path';
+import Post from "../models/post.js";
+import User from "../models/user.js";
+
+export const getPosts = (req, res, next) => {
   const currentPage = req.query.page || 1;
   const perPage = 2;
   let totalItems;
@@ -11,7 +18,8 @@ exports.getPosts = (req, res, next) => {
     .countDocuments()
     .then((count) => {
       totalItems = count;
-      return Post.find().populate('creator','name')
+      return Post.find()
+      // .populate('creator','name')
         .skip((currentPage - 1) * perPage)
         .limit(perPage);
     })
@@ -31,7 +39,7 @@ exports.getPosts = (req, res, next) => {
     });
 };
 
-exports.postPost = async (req, res, next) => {
+export const postPost = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new Error("validation failed, entered data is incorrect.");
@@ -74,8 +82,8 @@ exports.postPost = async (req, res, next) => {
   }
 };
 
-exports.getPost = async(req, res, next) => {
-  console.log(req)
+export const getPost = async(req, res, next) => {
+  // console.log(req)
   const postId = req.params.postId;
   try{
   const post = await Post.findById(postId)
@@ -95,7 +103,7 @@ exports.getPost = async(req, res, next) => {
     };
 };
 
-exports.updatePost = (req, res, next) => {
+export const updatePost = (req, res, next) => {
   const postId = req.params.postId;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -147,7 +155,7 @@ exports.updatePost = (req, res, next) => {
     });
 };
 
-exports.deletePost = (req, res, next) => {
+export const deletePost = (req, res, next) => {
   const postId = req.params.postId;
   Post.findById(postId)
     .then((post) => {

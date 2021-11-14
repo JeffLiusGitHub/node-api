@@ -1,8 +1,13 @@
-const { validationResult } = require("express-validator");
-const bcrypt = require("bcryptjs");
-const User = require("../models/user");
-const jwt = require("jsonwebtoken");
-exports.signup = async (req, res, next) => {
+// const { validationResult } = require("express-validator");
+// const bcrypt = require("bcryptjs");
+// const User = require("../models/user");
+// const jwt = require("jsonwebtoken");
+import validationResult from "express-validator";
+import bcrypt from "bcryptjs";
+import User from "../models/user.js";
+import jwt from "jsonwebtoken";
+
+export const signup = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new Error("validation failed");
@@ -30,7 +35,7 @@ exports.signup = async (req, res, next) => {
   }
 };
 
-exports.login = async (req, res, next) => {
+export const login = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   let loadedUser;
@@ -67,7 +72,7 @@ exports.login = async (req, res, next) => {
   }
 };
 
-exports.getUserStatus = async (req, res, next) => {
+export const getUserStatus = async (req, res, next) => {
   try {
     const user = await User.findById(req.userId);
 
@@ -85,7 +90,7 @@ exports.getUserStatus = async (req, res, next) => {
   }
 };
 
-exports.updateUserStatus = async (req, res, next) => {
+export const updateUserStatus = async (req, res, next) => {
   const newUserStatus = req.body.status;
   try {
     const user =await User.findById(req.userId);

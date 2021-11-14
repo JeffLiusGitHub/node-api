@@ -1,9 +1,17 @@
-const express = require("express");
-const { body } = require("express-validator");
-const User = require("../models/user");
-const authController = require("../controllers/auth");
+// const express = require("express");
+// const { body } = require("express-validator");
+// const User = require("../models/user");
+// const authController = require("../controllers/auth");
+// const isAuth = require('../middleware/is-auth')
+
+
+import express from "express";
+import {body} from "express-validator";
+import User from "../models/user.js";
+import {signup,login,getUserStatus,updateUserStatus} from "../controllers/auth.js";
+import isAuth from "../middleware/is-auth.js"
 const router = express.Router();
-const isAuth = require('../middleware/is-auth')
+
 
 router.put(
   "/signup",
@@ -22,13 +30,13 @@ router.put(
     body("password").trim().isLength({ min: 5 }),
     body("name").trim().not().isEmpty(),
   ],
-  authController.signup
+   signup
 );
 
-router.get('/status',isAuth,authController.getUserStatus)
+router.get('/status',isAuth, getUserStatus)
 
-router.post('/login',authController.login)
+router.post('/login', login)
 
-router.patch('/status',isAuth,[body('status').trim().not().isEmpty()],authController.updateUserStatus);
+router.patch('/status',isAuth,[body('status').trim().not().isEmpty()], updateUserStatus);
 
-module.exports = router;
+export default router;

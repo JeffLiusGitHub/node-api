@@ -1,10 +1,22 @@
-const path = require("path");
-const express = require("express");
-const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
-const multer = require("multer");
-const feedRoutes = require("./routes/feed");
-const authRoutes = require("./routes/auth");
+// const path = require("path");
+// const express = require("express");
+// const bodyParser = require("body-parser");
+// const mongoose = require("mongoose");
+// const multer = require("multer");
+// const feedRoutes = require("./routes/feed");
+// const authRoutes = require("./routes/auth");
+
+import path,{dirname} from "path";
+import {fileURLToPath} from'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename)
+
+import express from "express";
+import bodyParser from "body-parser";
+import  mongoose  from "mongoose";
+import multer from "multer";
+import feedRoutes from "./routes/feed.js";
+import authRoutes from "./routes/auth.js";
 
 const app = express();
 const fileStorage = multer.diskStorage({
@@ -33,7 +45,8 @@ app.use(bodyParser.json()); //app/json
 app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
 );
-app.use("/images", express.static(path.join(__dirname, "images")));
+// app.use("/images", express.static(path.join(__dirname, "images")));
+app.use("/images", express('./images',import.meta.url));
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
